@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score viewer</title>
+</head>
+<style>
+    #left {
+        left: 20%;
+        color: green;
+    }
+    #right {
+        left: 66%;
+        color: red;
+    }
+    .scroveview {
+        font-size: 150px;
+        max-width: 45%;
+        margin: 0 auto;
+        position: absolute;
+        top: 30%;
+    }
+
+    #history {
+        margin-left: 40%;
+        position: absolute;
+        width: 15%;
+        overflow: auto;
+        height: 80%;
+    }
+
+    .item {
+        font-size: 70px;
+    }
+</style>
+<body>
+    <div id="history">
+        <div class="item">+4</div>
+        <div class="item">-2</div>
+        <div class="item">-2</div>
+        <div class="item">-2</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+        <div class="item">+3</div>
+    </div>
+
+    <span class="scroveview" id="left">
+Первый игрок
+    </span>
+    <span class="scroveview" id="right">
+Второй игрок
+    </span>
+</body>
+<script>
+
+async function check() {
+    const response = await fetch('/data');
+    const res = await response.json();
+    Object.entries(res).forEach(([side, value]) => {
+        const element = document.getElementById(side);
+        if (element === null) return;
+        element.style.color = value.color;
+        element.textContent = value.score;
+    });
+    const history = document.getElementById('history');
+    if (history.children.length === res.history) return;
+    res.history.forEach(item => {
+        history.innerHTML += `
+            <div class="item" style="color: ${item.color};">
+                ${item.sign}${item.score}
+            </div>
+        `;
+    });
+    history.scrollTo({
+        top: history.scrollHeight - history.clientHeight,
+        behavior: 'smooth'
+    });
+}
+
+setInterval(check, 1000)
+</script>
+</html>

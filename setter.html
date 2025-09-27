@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игрок</title>
+    <style>
+        body,
+        html,
+        #stage1,
+        #stage3 {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .side {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .left-side {
+            background-color: lightblue;
+        }
+
+        .right-side {
+            background-color: lightcoral;
+        }
+
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+
+        .color {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color:hover {
+            transform: scale(1.1);
+        }
+
+        .selected-color {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .color {
+                width: 50px;
+                height: 50px;
+                margin: 4px;
+            }
+        }
+
+        .options {
+            display: flex;
+            width: 100%;
+            height: 20vh;
+        }
+
+        .scores {
+            height: 10vh;
+        }
+
+        .sides {
+            height: 100vh;
+        }
+
+        .option {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #333;
+            font-size: 100px;
+            transition: background-color 0.3s ease;
+        }
+
+        .score {
+            padding: 10px;
+            font-size: 2.8em;
+        }
+
+        .send {
+            margin-top: 24%;
+            margin-left: 15%;
+            cursor: pointer;
+            text-align: center;
+            font-size: 2.8em;
+            background-color: #f0f0f0;
+            width: 70%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="stage1" style="display: block;">
+        <div class="options sides">
+            <button class="side left-side" data-side="left">Я слева</button>
+            <button class="side right-side" data-side="right">Я справа</button>
+        </div>
+    </div>
+
+    <div id="stage2" style="display: none;">
+        <h1>Выберите цвет</h1>
+        <div class="color-picker">
+            <button class="color" style="background-color: #FF5733;" data-color="#FF5733"></button>
+            <button class="color" style="background-color: #33FF57;" data-color="#33FF57"></button>
+            <button class="color" style="background-color: #3357FF;" data-color="#3357FF"></button>
+            <button class="color" style="background-color: #FF33A5;" data-color="#FF33A5"></button>
+            <button class="color" style="background-color: #FFD700;" data-color="#FFD700"></button>
+            <button class="color" style="background-color: #8B4513;" data-color="#8B4513"></button>
+            <button class="color" style="background-color: #000000;" data-color="#000000"></button>
+        </div>
+    </div>
+
+    <div id="stage3" style="display: none;">
+        <div class="options signs">
+            <span class="option sign" data-sign="+">+</span>
+            <span class="option sign" data-sign="-">-</span>
+        </div>
+        <div class="options scores">
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+        </div>
+        <div class="options scores">
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+        </div>
+        <div class="options scores">
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+        </div>
+        <div class="options scores">
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+            <span class="option score">1</span>
+        </div>
+
+        <button
+            class="send"
+            onclick="send()"
+        >Отправить</button>
+    </div>
+</body>
+
+
+<script>
+    const myState = {};
+
+    document.querySelectorAll('#stage1 .side').forEach(button => {
+        button.addEventListener('click', function () {
+            myState.side = this.getAttribute('data-side');
+            document.getElementById('stage1').style.display = 'none';
+            document.getElementById('stage2').style.display = 'block';
+        });
+    });
+
+    document.querySelectorAll('#stage2 .color').forEach(button => {
+        button.addEventListener('click', function () {
+            myState.color = this.getAttribute('data-color');
+            document.getElementById('stage2').style.display = 'none';
+            document.getElementById('stage3').style.display = 'block';
+        });
+    });
+
+    document.querySelectorAll('.option.score').forEach((option, i) => {
+        option.textContent = i + 1;
+        option.setAttribute('data-score', i + 1);
+    });
+
+    document.querySelectorAll('.sign').forEach(button => {
+        button.addEventListener('click', function () {
+            myState.sign = this.getAttribute('data-sign');
+            document.querySelectorAll('.sign').forEach(button => {
+                button.style.backgroundColor = '';
+            });
+            this.style.backgroundColor = '#ccc';
+        });
+    });
+
+    document.querySelectorAll('.score').forEach(button => {
+        button.addEventListener('click', function () {
+            myState.score = this.getAttribute('data-score');
+            document.querySelectorAll('.score').forEach(button => {
+                button.style.backgroundColor = '';
+            });
+            this.style.backgroundColor = '#ccc';
+        });
+    });
+
+    function restart() {
+        myState.score = null;
+        document.querySelectorAll('.score').forEach(button => {
+            button.style.backgroundColor = '';
+        });
+    }
+
+    async function send() {
+        const response = await fetch("/set", {
+            method: "POST",
+            body: JSON.stringify({
+                score: myState.score,
+                side: myState.side,
+                sign: myState.sign,
+                color: myState.color,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        restart();
+    }
+</script>
+
+</html>
