@@ -114,6 +114,72 @@
             background-color: #f0f0f0;
             width: 70%;
         }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        .mode-toggle:hover {
+            background-color: #45a049;
+        }
+
+        .numeric-input {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .input-field {
+            width: 200px;
+            height: 60px;
+            font-size: 2em;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .numeric-keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .numeric-key {
+            width: 80px;
+            height: 80px;
+            font-size: 2em;
+            border: none;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .numeric-key:hover {
+            background-color: #ddd;
+        }
+
+        .clear-button {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .clear-button:hover {
+            background-color: #ff5252;
+        }
     </style>
 </head>
 
@@ -139,37 +205,61 @@
     </div>
 
     <div id="stage3" style="display: none;">
+        <button class="mode-toggle" id="modeToggle">Режим: Кнопки</button>
+        
         <div class="options signs">
             <span class="option sign" data-sign="+">+</span>
             <span class="option sign" data-sign="-">-</span>
         </div>
-        <div class="options scores">
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
+        
+        <!-- Старый интерфейс с кнопками -->
+        <div id="buttonMode" class="scores-container">
+            <div class="options scores">
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+            </div>
+            <div class="options scores">
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+            </div>
+            <div class="options scores">
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+            </div>
+            <div class="options scores">
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+                <span class="option score">1</span>
+            </div>
         </div>
-        <div class="options scores">
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-        </div>
-        <div class="options scores">
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-        </div>
-        <div class="options scores">
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
-            <span class="option score">1</span>
+
+        <!-- Новый интерфейс с цифровой клавиатурой -->
+        <div id="numericMode" class="numeric-input">
+            <input type="text" class="input-field" id="scoreInput" placeholder="0" readonly>
+            <div class="numeric-keypad">
+                <button class="numeric-key" data-digit="1">1</button>
+                <button class="numeric-key" data-digit="2">2</button>
+                <button class="numeric-key" data-digit="3">3</button>
+                <button class="numeric-key" data-digit="4">4</button>
+                <button class="numeric-key" data-digit="5">5</button>
+                <button class="numeric-key" data-digit="6">6</button>
+                <button class="numeric-key" data-digit="7">7</button>
+                <button class="numeric-key" data-digit="8">8</button>
+                <button class="numeric-key" data-digit="9">9</button>
+                <button class="numeric-key" data-digit="0">0</button>
+                <button class="numeric-key clear-button" id="clearButton">C</button>
+            </div>
         </div>
 
         <button
@@ -181,7 +271,24 @@
 
 
 <script>
-    const myState = {};
+    const myState = {
+        inputMode: 'buttons' // 'buttons' или 'numeric'
+    };
+
+    // Переключение режима ввода
+    document.getElementById('modeToggle').addEventListener('click', function() {
+        if (myState.inputMode === 'buttons') {
+            myState.inputMode = 'numeric';
+            this.textContent = 'Режим: Цифры';
+            document.getElementById('buttonMode').style.display = 'none';
+            document.getElementById('numericMode').style.display = 'flex';
+        } else {
+            myState.inputMode = 'buttons';
+            this.textContent = 'Режим: Кнопки';
+            document.getElementById('buttonMode').style.display = 'block';
+            document.getElementById('numericMode').style.display = 'none';
+        }
+    });
 
     document.querySelectorAll('#stage1 .side').forEach(button => {
         button.addEventListener('click', function () {
@@ -199,6 +306,7 @@
         });
     });
 
+    // Инициализация кнопок с очками (старый режим)
     document.querySelectorAll('.option.score').forEach((option, i) => {
         option.textContent = i + 1;
         option.setAttribute('data-score', i + 1);
@@ -214,6 +322,7 @@
         });
     });
 
+    // Обработчики для старого режима (кнопки)
     document.querySelectorAll('.score').forEach(button => {
         button.addEventListener('click', function () {
             myState.score = this.getAttribute('data-score');
@@ -224,11 +333,35 @@
         });
     });
 
+    // Обработчики для нового режима (цифровая клавиатура)
+    document.querySelectorAll('.numeric-key[data-digit]').forEach(button => {
+        button.addEventListener('click', function () {
+            const digit = this.getAttribute('data-digit');
+            const input = document.getElementById('scoreInput');
+            const currentValue = input.value;
+            
+            if (currentValue === '0') {
+                input.value = digit;
+            } else {
+                input.value = currentValue + digit;
+            }
+            
+            myState.score = parseInt(input.value);
+        });
+    });
+
+    // Кнопка очистки
+    document.getElementById('clearButton').addEventListener('click', function() {
+        document.getElementById('scoreInput').value = '0';
+        myState.score = 0;
+    });
+
     function restart() {
         myState.score = null;
         document.querySelectorAll('.score').forEach(button => {
             button.style.backgroundColor = '';
         });
+        document.getElementById('scoreInput').value = '0';
     }
 
     async function send() {
