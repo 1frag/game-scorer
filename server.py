@@ -60,16 +60,17 @@ async def set_handler(request):
     op = Side.RIGHT if cur == Side.LEFT else Side.LEFT
     GAME[cur].color = req['color']
 
-    score = int(req['score'])
-    HISTORY.append(Step(
-        color=GAME[cur].color,
-        sign=req['sign'],
-        score=score,
-    ))
-    if req['sign'] == '-':
-        GAME[op].score -= score
-    else:
-        GAME[cur].score += score
+    if 'score' in req:
+        score = int(eval(str(req['score'])))
+        HISTORY.append(Step(
+            color=GAME[cur].color,
+            sign=req['sign'],
+            score=score,
+        ))
+        if req['sign'] == '-':
+            GAME[op].score -= score
+        else:
+            GAME[cur].score += score
 
     return web.json_response({})
 
